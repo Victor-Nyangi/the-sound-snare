@@ -52,11 +52,4 @@ export default async function handler(
       .status(404)
       .json({ message: `Category with the slug ${slug} is not found` })
   }
-
-  return new Response(JSON.stringify({ articles }), {
-    status: 200,
-    headers: {
-      "content-type": "application/json",
-    },
-  });
 }

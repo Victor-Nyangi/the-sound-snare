@@ -43,12 +43,10 @@ export default async function handler(
     { slug }
   );
 
-  const postData = {...data[0], categSlug: valuemap.get(`${data[0].category}`)}
-  if (postData) {
+  if (data[0]) {
+    const postData = { ...data[0], categSlug: valuemap.get(`${data[0].category}`) };
     res.status(200).json(postData);
   } else {
-    res
-      .status(404)
-      .json({ message: `Post with the slug ${slug} is not found` });
+    res.status(404).json({ message: `Post with the slug ${slug} is not found` });
   }
 }

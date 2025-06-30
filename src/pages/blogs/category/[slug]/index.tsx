@@ -154,7 +154,9 @@ export async function getStaticProps(
   const res = await fetch(
     `${server}/api/blogcategories/${context.params.slug}`
   );
-
+  if (!res.ok) {
+    return { notFound: true };
+  }
   const articles = await res.json();
 
   return {

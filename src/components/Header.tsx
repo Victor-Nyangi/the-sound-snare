@@ -3,7 +3,7 @@ import Link from "next/link";
 import { StaticImageData } from "next/image";
 
 type Props = {
-  path: StaticImageData;
+  path: StaticImageData | string;
   color?: string;
 };
 

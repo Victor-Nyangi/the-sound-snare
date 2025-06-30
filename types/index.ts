@@ -31,7 +31,7 @@ export interface ArticleType {
   name: string;
   _createdAt: string;
   mainImage: ArticleImage;
-  body: string;
+  body: any;
 }
 
 export interface ArticleTypeI extends ArticleType {

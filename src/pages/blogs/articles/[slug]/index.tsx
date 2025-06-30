@@ -4,7 +4,6 @@ import type { ReactElement } from "react";
 import { server } from '../../../../../config'
 import NestedLayout from "@/components/NestedLayout";
 import Layout from "@/components/Layout";
-import ArticleImg from "/public/images/s2.jpg";
 import type { NextPageWithLayout } from "../../../_app";
 import { ArticleTypeI } from '../../../../../types';
 import { GetStaticPropsResult } from 'next';
@@ -30,6 +29,8 @@ interface Context {
 // function urlFor(source) {
 //   return builder.image(source);
 // }
+
+const ArticleImg = "/images/s2.jpg";
 
 const Article: NextPageWithLayout<Props> = ({postData, otherPosts}: Props) => {
   const components = {
@@ -120,11 +121,7 @@ const Article: NextPageWithLayout<Props> = ({postData, otherPosts}: Props) => {
 
         <div className="w-full mx-auto prose md:w-3/4">
           <PortableText
-            value={
-              typeof postData.body === "string"
-                ? JSON.parse(postData.body)
-                : postData.body
-            }
+            value={postData.body}
             components={components}
           />
         </div>
@@ -169,14 +166,15 @@ export async function getStaticProps(
   const res = await fetch(
     `${server}/api/posts/${context.params.slug}`
   );
+  if (!res.ok) {
+    return { notFound: true };
+  }
   const postData = await res.json();
 
   const res2 = await fetch(
     `${server}/api/otherposts/${postData.categSlug}/${context.params.slug}`
   );
-
-  const otherPosts = await res2.json();
-
+  const otherPosts = res2.ok ? await res2.json() : [];
 
   return {
     props: {
