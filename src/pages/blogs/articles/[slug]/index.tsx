@@ -1,21 +1,22 @@
-import Header from '@/components/Header'
+import Header from "@/components/Header";
 import type { ReactElement } from "react";
 // import BlockContent from "@sanity/block-content-to-react";
-import { server } from '../../../../../config'
+import { server } from "../../../../../config";
 import NestedLayout from "@/components/NestedLayout";
 import Layout from "@/components/Layout";
 import type { NextPageWithLayout } from "../../../_app";
-import { ArticleTypeI } from '../../../../../types';
-import { GetStaticPropsResult } from 'next';
-import Spinner from '@/components/Spinner';
-import {PortableText} from '@portabletext/react'
-import moment from 'moment';
-import Image from 'next/image';
-import OtherArticles from '@/components/Blog/OtherArticles';
+import { ArticleTypeI } from "../../../../../types";
+import { GetStaticPropsResult } from "next";
+import Spinner from "@/components/Spinner";
+import { PortableText } from "@portabletext/react";
+import moment from "moment";
+import Image from "next/image";
+import OtherArticles from "@/components/Blog/OtherArticles";
+import { categoryMap, client, reverseCategoryMap } from "@/lib/sanity";
 
 type Props = {
   postData: ArticleTypeI;
-  otherPosts: ArticleTypeI[]
+  otherPosts: ArticleTypeI[];
 };
 
 interface Context {
@@ -24,7 +25,6 @@ interface Context {
   };
 }
 
-
 // const builder = imageUrlBuilder(client);
 // function urlFor(source) {
 //   return builder.image(source);
@@ -32,24 +32,27 @@ interface Context {
 
 const ArticleImg = "/images/s2.jpg";
 
-const Article: NextPageWithLayout<Props> = ({postData, otherPosts}: Props) => {
+const Article: NextPageWithLayout<Props> = ({
+  postData,
+  otherPosts,
+}: Props) => {
   const components = {
     types: {
       code: (props: any) => (
         <pre data-language={props.node.language}>
           <code>{props.node.code}</code>
         </pre>
-      )
-    }
-  }
+      ),
+    },
+  };
 
-  if (!postData) return <Spinner/>;
+  if (!postData) return <Spinner />;
 
   return (
     <>
-          <Header path={ArticleImg} color="white"/>
+      <Header path={ArticleImg} color="white" />
 
-          <article
+      <article
         className="px-4 py-24 mx-auto max-w-7xl"
         itemID="!#"
         itemScope
@@ -109,78 +112,115 @@ const Article: NextPageWithLayout<Props> = ({postData, otherPosts}: Props) => {
             </a>
           </div> */}
           <Image
-            // src={urlFor(postData.mainImage).width(200).url()}
             src={postData.mainImage.asset.url}
             className="object-cover w-full h-64 bg-center rounded"
             alt={postData?.title}
             width={500}
             height={100}
-            unoptimized
+            priority
           />
         </div>
 
         <div className="w-full mx-auto prose md:w-3/4">
-          <PortableText
-            value={postData.body}
-            components={components}
-          />
+          <PortableText value={postData.body} components={components} />
         </div>
       </article>
 
       {otherPosts.length > 0 ? <OtherArticles articles={otherPosts} /> : <></>}
     </>
-  )
-}
+  );
+};
 
 Article.getLayout = function getLayout(page: ReactElement) {
-    return (
-      <Layout>
-        <NestedLayout>{page}</NestedLayout>
-      </Layout>
-    );
-  };
+  return (
+    <Layout>
+      <NestedLayout>{page}</NestedLayout>
+    </Layout>
+  );
+};
 
 // dynamically generate paths based on the data being fetched
 export const getStaticPaths = async () => {
-  const res = await fetch(`${server}/api/blogs`);
-  const data = await res.json()
-  const articles = data.articles
+  try {
+    const articles = await client.fetch(`
+      *[_type == "post"] {
+        "slug": slug.current
+      }
+    `);
 
-  const paths = articles.map((article: ArticleTypeI) => {
+    const paths = articles.map((article: { slug: string }) => ({
+      params: { slug: article.slug },
+    }));
+
     return {
-      params: {
-        slug: article.slug.current
-      },
+      paths,
+      fallback: false,
     };
-  });
-
-  return {
-    paths,
-    fallback: false,
-  };
+  } catch (error) {
+    console.error("Error fetching paths:", error);
+    return { paths: [], fallback: false };
+  }
 };
 
 export async function getStaticProps(
   context: Context
 ): Promise<GetStaticPropsResult<Props>> {
-  const res = await fetch(
-    `${server}/api/posts/${context.params.slug}`
-  );
-  if (!res.ok) {
+  try {
+    const { slug } = context.params;
+
+    // Fetch the main post
+    const postData = await client.fetch(`
+      *[slug.current == $slug][0] {
+        title,
+        slug,
+        "category": categories[0]._ref,
+        mainImage {
+          asset->{ _id, url }
+        },
+        body,
+        "name": author->name,
+        "authorImage": author->image,
+        _createdAt,
+      }
+    `, { slug });
+
+    if (!postData) {
+      return { notFound: true };
+    }
+
+    // Add category slug - ensure it's never undefined
+    const categSlug = categoryMap.get(postData.category) || null;
+    const postWithCategory = {
+      ...postData,
+      categSlug
+    };
+
+    // Fetch related posts
+    const categoryRef = postWithCategory.categSlug ? reverseCategoryMap.get(postWithCategory.categSlug) : null;
+    const otherPosts = categoryRef ? await client.fetch(`
+      *[_type == "post" && categories[0]._ref == $categoryRef && slug.current != $slug][0...4] {
+        title,
+        slug,
+        mainImage {
+          asset->{ _id, url }
+        },
+        excerpt,
+        _createdAt,
+        "name": author->name,
+      }
+    `, { categoryRef, slug }) : [];
+
+    return {
+      props: {
+        postData: postWithCategory,
+        otherPosts
+      },
+      revalidate: 3600, // Revalidate every hour
+    };
+  } catch (error) {
+    console.error("Error in getStaticProps:", error);
     return { notFound: true };
   }
-  const postData = await res.json();
-
-  const res2 = await fetch(
-    `${server}/api/otherposts/${postData.categSlug}/${context.params.slug}`
-  );
-  const otherPosts = res2.ok ? await res2.json() : [];
-
-  return {
-    props: {
-      postData,
-      otherPosts
-    },
-  };
 }
-export default Article
+
+export default Article;

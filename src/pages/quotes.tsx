@@ -5,7 +5,7 @@ import NestedLayout from "@/components/NestedLayout";
 import type { NextPageWithLayout } from "./_app";
 
 import Header from "@/components/Header";
-import QuotesImg from "/public/images/s5.jpg"
+import { client } from "../lib/sanity";
 
 type Props = {
     quotes: string[]
@@ -39,7 +39,7 @@ const Quotes: NextPageWithLayout<Props> = ({ quotes }: Props) => {
 
   return (
     <>
-    <Header path={QuotesImg} color="white"/>
+    <Header path="/images/s5.jpg" color="white"/>
     <section className='m-8'>
     <div>
       <h1 className="text-4xl text-center mb-8 font-semibold">Quotes</h1>
@@ -114,15 +114,15 @@ Quotes.getLayout = function getLayout(page: ReactElement) {
 
   // Fetch data in build time
   export const getStaticProps = async () => {
-    const res = await fetch(`${server}/api/quotes`)
-    const data = await res.json()
-    const quotes = data.quotes[0].body[0].children[0].text.split('|');
-
+    const quotesData = await client.fetch(`*[_type == "post" && categories[0]._ref == $quotesRef][0]{body}`, {
+      quotesRef: process.env.quotesRef
+    });
+    const quotes = quotesData?.body?.[0]?.children?.[0]?.text?.split("|") || [];
     return {
       props: {
         quotes,
       },
-    }
+    };
   }
 
 export default Quotes

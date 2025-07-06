@@ -1,34 +1,34 @@
-import Image from "next/image";
-import NotFoundImg from "/public/images/not-found.svg";
+import type { ReactElement } from "react";
+import Layout from "@/components/Layout";
+import NestedLayout from "@/components/NestedLayout";
+import type { NextPageWithLayout } from "./_app";
+import Header from "@/components/Header";
 import Link from "next/link";
 
-export default function Custom404() {
+const NotFound: NextPageWithLayout = () => {
   return (
     <>
-      <div className="bg-indigo-900 relative overflow-hidden h-screen">
-        <Image
-          alt="Sound Snare not found"
-          src={NotFoundImg}
-          className="absolute h-full w-full object-cover"
-        />
-        <div className="inset-0 bg-black opacity-25 absolute"></div>
-        <div className="container mx-auto px-6 md:px-12 relative z-10 flex items-center py-32 xl:py-40">
-          <div className="w-full font-mono flex flex-col items-center relative z-10">
-            <h1 className="font-extrabold text-5xl text-center text-white leading-tight mt-4">
-              You&#x27;re alone here
-            </h1>
-            <Link
-              href="/"
-              className="font-extrabold text-3xl text-center text-purple-500 leading-tight mt-4"
-            >
-              Head back home
-            </Link>
-            <p className="font-extrabold text-8xl my-44 text-white animate-bounce">
-              404
-            </p>
-          </div>
-        </div>
+      <Header path="/images/not-found.svg" color="white" />
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
+        <p className="text-xl text-gray-600 mb-8">Page not found</p>
+        <Link
+          href="/"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Go back home
+        </Link>
       </div>
     </>
   );
-}
+};
+
+NotFound.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      <NestedLayout>{page}</NestedLayout>
+    </Layout>
+  );
+};
+
+export default NotFound;

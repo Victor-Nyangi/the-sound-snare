@@ -4,14 +4,22 @@ import NestedLayout from "../../../../components/NestedLayout";
 import type { NextPageWithLayout } from "../../../_app";
 import { GetStaticPropsResult } from "next";
 
-import Header from "../../../../components/Header";
-import GeneralLife from "/public/images/general_life.jpg";
-import { server } from "../../../../../config";
+import Header from "@/components/Header";
 
 import Link from "next/link";
 import Image from "next/image";
 import moment from "moment";
-import { ArticleTypeI, CategoryType } from "../../../../../types";
+import { ArticleTypeI } from "../../../../../types";
+import { client, reverseCategoryMap } from "@/lib/sanity";
+
+// Static category data for reliable build-time path generation
+const STATIC_CATEGORIES = [
+  'general-life',
+  'religion', 
+  'health',
+  'nutrition',
+  'survival-skills'
+];
 
 type Props = {
   articles: ArticleTypeI[];
@@ -26,7 +34,7 @@ interface Context {
 const Category: NextPageWithLayout<Props> = ({ articles }: Props) => {
   return (
     <>
-      <Header path={GeneralLife} color="white" />
+      <Header path="/images/general_life.jpg" color="white" />
 
       <section className="px-4 py-24 mx-auto max-w-7xl">
         <h2 className="mb-2 text-3xl font-extrabold leading-tight text-gray-900">
@@ -129,19 +137,12 @@ Category.getLayout = function getLayout(page: ReactElement) {
   );
 };
 
-// dynamically generate paths based on the data being fetched
+// Use static categories for reliable build-time path generation
 export const getStaticPaths = async () => {
-  const res = await fetch(`${server}/api/blogcategories`);
-  const categories = await res.json();
-
-  const paths = categories.map((category: CategoryType) => {
-    return {
-      params: {
-        slug: category.slug,
-      },
-    };
-  });
-
+  const paths = STATIC_CATEGORIES.map((slug) => ({
+    params: { slug },
+  }));
+  
   return {
     paths,
     fallback: false,
@@ -151,19 +152,41 @@ export const getStaticPaths = async () => {
 export async function getStaticProps(
   context: Context
 ): Promise<GetStaticPropsResult<Props>> {
-  const res = await fetch(
-    `${server}/api/blogcategories/${context.params.slug}`
-  );
-  if (!res.ok) {
-    return { notFound: true };
+  const { slug } = context.params;
+  
+  try {
+    // Get the category ref from the slug
+    const categoryRef = reverseCategoryMap.get(slug);
+    if (!categoryRef) {
+      return { notFound: true };
+    }
+    
+    const articles = await client.fetch(`
+      *[_type == "post" && categories[0]._ref == $categoryRef]{
+        title,
+        slug,
+        mainImage{
+          asset->{ _id, url }
+        },
+        excerpt,
+        _createdAt,
+        "name": author->name,
+      }
+    `, { categoryRef });
+    
+    return {
+      props: {
+        articles: articles || [],
+      },
+      revalidate: 3600, // Revalidate every hour
+    };
+  } catch (error) {
+    console.error('Error in getStaticProps for category:', slug, error);
+    return { 
+      props: { articles: [] },
+      revalidate: 3600,
+    };
   }
-  const articles = await res.json();
-
-  return {
-    props: {
-      articles,
-    },
-  };
 }
 
 export default Category;

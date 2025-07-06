@@ -41,7 +41,7 @@ export interface ArticleTypeI extends ArticleType {
 
 export interface ArticleTypeII extends ArticleTypeI {
   category: string;
-  categSlug: string;
+  categSlug: string | null;
 }
 
 export interface CategoryType {

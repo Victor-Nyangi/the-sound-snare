@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Meta from "@/components/Meta";
-import SoundSnareBg from "/public/sound-snare-bg.jpg";
+
 
 export default function Home() {
   return (
@@ -9,10 +9,9 @@ export default function Home() {
       <Meta />
       <main className="App">
         <section className="relative bg-white">
-          <Image
+          <img
             className="absolute inset-0  sm:object-[25%] object-cover w-full h-full sm:opacity-100"
-            src={SoundSnareBg}
-            // src="https://images.ctfassets.net/2aefkrtkr5cr/5MNaQGCtBegVDlxRdg0h2A/470ea6c37c72bd4f74e0fea9598718b6/sound-snare-bg.jpg"
+            src="/sound-snare-bg.jpg"
             alt="The thoughts I have, the music I hear."
           />
 

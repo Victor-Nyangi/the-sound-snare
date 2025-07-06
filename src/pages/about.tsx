@@ -3,18 +3,16 @@ import Layout from "@/components/Layout";
 import NestedLayout from "@/components/NestedLayout";
 import type { NextPageWithLayout } from "./_app";
 import Header from "@/components/Header";
-import AboutUsImg from "/public/images/tech-bg.jpg";
-import TechBg from "/public/images/tech-background.jpg";
 
 const About: NextPageWithLayout = () => {
   return (
     <>
-      <Header path={AboutUsImg} color="white" />
+      <Header path="/images/tech-bg.jpg" color="white" />
 
       <div
         className="flex flex-row my-8 justify-center items-center min-h-screen bg-app bg-center bg-no-repeat bg-cover"
         style={{
-          backgroundImage: `url(${TechBg.src})`,
+          backgroundImage: `url('/images/tech-background.jpg')`,
         }}
       >
         <main className="flex flex-col lg:flex-row bg-white backdrop-filter backdrop-blur-lg bg-opacity-20 rounded-xl overflow-hidden w-full max-w-5xl shadow-lg m-4 lg:m-6">

@@ -4,17 +4,13 @@ import Layout from "@/components/Layout";
 import NestedLayout from "@/components/NestedLayout";
 import type { NextPageWithLayout } from "./../_app";
 import Header from "../../components/Header";
-import BlogsImg from "/public/images/blogs.jpg";
-import HealthPic from "/public/images/health.jpg";
-import Survival from "/public/images/survival.jpg";
-import Nutrition from "/public/images/nutrition.jpg";
-import Religion from "/public/images/religion.jpg";
-import Quotes from "/public/images/s5.jpg";
+
 
 import Link from "next/link";
 import Image from "next/image";
 import { ArticleTypeI } from "../../../types";
 import LatestArticles from "@/components/Blog/LatestArticles";
+import { client } from "../../lib/sanity";
 
 type Props = {
   articles: ArticleTypeI[]
@@ -24,7 +20,7 @@ const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
 
   return (
     <>
-      <Header path={BlogsImg} color="white" />
+      <Header path="/images/blogs.jpg" color="white" />
 
       <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
         <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
@@ -95,63 +91,56 @@ const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
           </p>
         </div>
         <div className="grid gap-6 row-gap-5 mb-8 lg:grid-cols-4 sm:row-gap-6 sm:grid-cols-2">
-          <Link href="health" aria-label="View Item">
-            <div className="relative overflow-hidden transition duration-200 transform rounded shadow-lg hover:-translate-y-2 hover:shadow-2xl">
-              <Image
-                className="object-cover w-full h-56 md:h-64"
-                src={HealthPic}
-                alt="Sound Snare Health"
-              />
-              <div className="absolute inset-x-0 bottom-0 px-6 py-4 bg-black bg-opacity-75">
-                <p className="text-sm font-medium tracking-wide text-white">
-                  Thoughts on healthy living and ways to maintain a healthy mind
-                  and body.
-                </p>
-              </div>
-            </div>
+          <Link href="/blogs/category/health">
+            <Image
+              src="/images/health.jpg"
+              alt="Health"
+              className="object-cover w-full h-56 mb-5 bg-center rounded"
+              loading="lazy"
+              width={500}
+              height={100}
+            />
           </Link>
 
-          <Link href="survival-skills" aria-label="View Item">
-            <div className="relative overflow-hidden transition duration-200 transform rounded shadow-lg hover:-translate-y-2 hover:shadow-2xl">
-              <Image
-                className="object-cover w-full h-56 md:h-64"
-                src={Survival}
-                alt="Sound Snare Survival"
-              />
-              <div className="absolute inset-x-0 bottom-0 px-6 py-4 bg-black bg-opacity-75">
-                <p className="text-sm font-medium tracking-wide text-white">
-                  Thoughts on survival in life and in this world.
-                </p>
-              </div>
-            </div>
+          <Link href="/blogs/category/survival-skills">
+            <Image
+              src="/images/survival.jpg"
+              alt="Survival"
+              className="object-cover w-full h-56 mb-5 bg-center rounded"
+              loading="lazy"
+              width={500}
+              height={100}
+            />
           </Link>
-          <Link href="nutrition" aria-label="View Item">
-            <div className="relative overflow-hidden transition duration-200 transform rounded shadow-lg hover:-translate-y-2 hover:shadow-2xl">
-              <Image
-                className="object-cover w-full h-56 md:h-64"
-                src={Nutrition}
-                alt="Sound snare nutrition"
-              />
-              <div className="absolute inset-x-0 bottom-0 px-6 py-4 bg-black bg-opacity-75">
-                <p className="text-sm font-medium tracking-wide text-white">
-                  Thoughts on nutirion, diet and food.
-                </p>
-              </div>
-            </div>
+          <Link href="/blogs/category/nutrition">
+            <Image
+              src="/images/nutrition.jpg"
+              alt="Nutrition"
+              className="object-cover w-full h-56 mb-5 bg-center rounded"
+              loading="lazy"
+              width={500}
+              height={100}
+            />
           </Link>
-          <Link href="religion" aria-label="View Item">
-            <div className="relative overflow-hidden transition duration-200 transform rounded shadow-lg hover:-translate-y-2 hover:shadow-2xl">
-              <Image
-                className="object-cover w-full h-56 md:h-64"
-                src={Religion}
-                alt="Sound Snare Religion"
-              />
-              <div className="absolute inset-x-0 bottom-0 px-6 py-4 bg-black bg-opacity-75">
-                <p className="text-sm font-medium tracking-wide text-white">
-                  Thoughts on religion, the bible and God.
-                </p>
-              </div>
-            </div>
+          <Link href="/blogs/category/religion">
+            <Image
+              src="/images/religion.jpg"
+              alt="Religion"
+              className="object-cover w-full h-56 mb-5 bg-center rounded"
+              loading="lazy"
+              width={500}
+              height={100}
+            />
+          </Link>
+          <Link href="/quotes">
+            <Image
+              src="/images/s5.jpg"
+              alt="Quotes"
+              className="object-cover w-full h-56 mb-5 bg-center rounded"
+              loading="lazy"
+              width={500}
+              height={100}
+            />
           </Link>
         </div>
         <div className="text-center">
@@ -208,7 +197,7 @@ const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
                   </p>
                 </div>
                 <Image
-                  src={Quotes}
+                  src="/images/s5.jpg"
                   className="w-16 rounded-full h-16"
                   width={512}
                   height={512}
@@ -238,7 +227,7 @@ const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
                   </p>
                 </div>
                 <Image
-                  src={Survival}
+                  src="/images/survival.jpg"
                   className="w-16 rounded-full h-16"
                   width={512}
                   height={512}
@@ -268,7 +257,7 @@ const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
                   </p>
                 </div>
                 <Image
-                  src={HealthPic}
+                  src="/images/health.jpg"
                   className="w-16 rounded-full h-16"
                   width={512}
                   height={512}
@@ -332,15 +321,22 @@ Blog.getLayout = function getLayout(page: ReactElement) {
 
 // Fetch data in build time
 export const getStaticProps = async () => {
-  const res = await fetch(`${server}/api/latestblogs`)
-  const data = await res.json()
-  const articles = data.articles
-
+  const articles = await client.fetch(`*[_type == "post"][0...4] {
+    title,
+    slug,
+    mainImage{
+      asset->{ _id, url }
+    },
+    excerpt,
+    _createdAt,
+    "name": author->name,
+  }`);
   return {
     props: {
       articles,
     },
-  }
+    revalidate: 1800, // Revalidate every 30 minutes
+  };
 }
 
 export default Blog;
