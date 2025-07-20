@@ -20,11 +20,11 @@ export default async function handler(
 
     const valuemap = new Map();
 
-    valuemap.set('nutrition', 'dfce2770-0a4f-45f1-af49-847fbcef441e');
-    valuemap.set('general-life', '204e5acb-c665-4436-beb3-0f07382c68e3' );
-    valuemap.set('religion', 'f38c3ff5-cbb3-4ba7-8602-c43cf9d1c18b');
-    valuemap.set('health', '3fa72f0c-5589-4a3f-99e9-03d32387e138');
-    valuemap.set('survival-skills', '08e144fc-67f2-4717-abd1-d3f8957c1afe');
+    valuemap.set('nutrition', 'f6164172-45a1-4ca1-b8ec-50e37ae18773');
+    valuemap.set('general-life', '2be72195-3222-4ba9-845b-33897d1edec3' );
+    valuemap.set('religion', '7349c500-7098-464d-bd2e-2b6d5b5391c5');
+    valuemap.set('health', 'a19706b0-5fa9-465a-af73-d7e47cf534eb');
+    valuemap.set('survival-skills', '7d0304cd-6686-41bc-b458-dc6ef880b0b4');
 
     const refKey = valuemap.get(`${slug}`)
 

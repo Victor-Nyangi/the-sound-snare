@@ -29,11 +29,11 @@ export default async function handler(req: NextRequest) {
 const articles = data.map((article: ArticleTypeII) => {
     const valuemap = new Map();
 
-    valuemap.set('dfce2770-0a4f-45f1-af49-847fbcef441e', 'nutrition');
-    valuemap.set('204e5acb-c665-4436-beb3-0f07382c68e3', 'general-life');
-    valuemap.set('f38c3ff5-cbb3-4ba7-8602-c43cf9d1c18b', 'religion');
-    valuemap.set('3fa72f0c-5589-4a3f-99e9-03d32387e138', 'health');
-    valuemap.set('08e144fc-67f2-4717-abd1-d3f8957c1afe', 'survival-skills');
+    valuemap.set('f6164172-45a1-4ca1-b8ec-50e37ae18773', 'nutrition');
+    valuemap.set('2be72195-3222-4ba9-845b-33897d1edec3', 'general-life');
+    valuemap.set('7349c500-7098-464d-bd2e-2b6d5b5391c5', 'religion');
+    valuemap.set('a19706b0-5fa9-465a-af73-d7e47cf534eb', 'health');
+    valuemap.set('7d0304cd-6686-41bc-b458-dc6ef880b0b4', 'survival-skills');
     return {...article, categSlug: valuemap.get(`${article.category}`)}
 
 })

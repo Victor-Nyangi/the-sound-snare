@@ -1,7 +1,6 @@
 import Header from "@/components/Header";
 import type { ReactElement } from "react";
 // import BlockContent from "@sanity/block-content-to-react";
-import { server } from "../../../../../config";
 import NestedLayout from "@/components/NestedLayout";
 import Layout from "@/components/Layout";
 import type { NextPageWithLayout } from "../../../_app";
@@ -169,7 +168,8 @@ export async function getStaticProps(
     const { slug } = context.params;
 
     // Fetch the main post
-    const postData = await client.fetch(`
+    const postData = await client.fetch(
+      `
       *[slug.current == $slug][0] {
         title,
         slug,
@@ -182,7 +182,10 @@ export async function getStaticProps(
         "authorImage": author->image,
         _createdAt,
       }
-    `, { slug });
+    `,
+      { slug }
+    );
+    console.log(postData, "postData");
 
     if (!postData) {
       return { notFound: true };
@@ -192,12 +195,16 @@ export async function getStaticProps(
     const categSlug = categoryMap.get(postData.category) || null;
     const postWithCategory = {
       ...postData,
-      categSlug
+      categSlug,
     };
 
     // Fetch related posts
-    const categoryRef = postWithCategory.categSlug ? reverseCategoryMap.get(postWithCategory.categSlug) : null;
-    const otherPosts = categoryRef ? await client.fetch(`
+    const categoryRef = postWithCategory.categSlug
+      ? reverseCategoryMap.get(postWithCategory.categSlug)
+      : null;
+    const otherPosts = categoryRef
+      ? await client.fetch(
+          `
       *[_type == "post" && categories[0]._ref == $categoryRef && slug.current != $slug][0...4] {
         title,
         slug,
@@ -208,12 +215,15 @@ export async function getStaticProps(
         _createdAt,
         "name": author->name,
       }
-    `, { categoryRef, slug }) : [];
+    `,
+          { categoryRef, slug }
+        )
+      : [];
 
     return {
       props: {
         postData: postWithCategory,
-        otherPosts
+        otherPosts,
       },
       revalidate: 3600, // Revalidate every hour
     };
