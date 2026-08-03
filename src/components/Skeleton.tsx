@@ -5,6 +5,10 @@ interface SkeletonProps {
   lines?: number;
 }
 
+// Deterministic widths: Math.random() during render produces different markup
+// on the server and the client, which triggers a hydration mismatch.
+const LINE_WIDTHS = ['100%', '75%', '85%', '65%', '95%', '70%'];
+
 export const Skeleton: React.FC<SkeletonProps> = ({ className = '', lines = 1 }) => {
   return (
     <div className={`animate-pulse ${className}`}>
@@ -12,7 +16,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({ className = '', lines = 1 })
         <div
           key={index}
           className="h-4 bg-gray-200 rounded mb-2"
-          style={{ width: `${Math.random() * 40 + 60}%` }}
+          style={{ width: LINE_WIDTHS[index % LINE_WIDTHS.length] }}
         />
       ))}
     </div>

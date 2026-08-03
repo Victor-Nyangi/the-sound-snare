@@ -1,11 +1,19 @@
 import Head from 'next/head'
 
 interface Props {
-  title : string;
-  keywords ?: string;
+  title?: string;
+  keywords?: string;
   description?: string;
 }
-const Meta = ({ title, keywords, description }: Props) => {
+
+// Default parameters rather than `Meta.defaultProps`: React 19 removed
+// defaultProps support for function components, which silently left every
+// page with an empty <title> and no meta description.
+const Meta = ({
+  title = 'Sound Snare blog',
+  keywords = 'blog, health, podcast',
+  description = 'A simple blog addressing health, relationships, religion and life.',
+}: Props) => {
   return (
     <Head>
       <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -16,12 +24,6 @@ const Meta = ({ title, keywords, description }: Props) => {
       <title>{title}</title>
     </Head>
   )
-}
-
-Meta.defaultProps = {
-  title: 'Sound Snare blog',
-  keywords: 'blog, health, podcast',
-  description: 'A simple blog addressing health, relationships, religion and life.',
 }
 
 export default Meta

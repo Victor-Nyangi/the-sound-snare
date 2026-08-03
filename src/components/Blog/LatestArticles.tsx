@@ -33,7 +33,7 @@ const LatestArticles = ({ articles }: Props) => {
                 </p>
                 <h2 className="mb-2 text-xl font-extrabold leading-snug text-gray-200">
                   <Link
-                    href={post.slug.current}
+                    href={`/blogs/articles/${post.slug.current}`}
                     className="text-purple-400 hover:text-purple-700"
                   >
                     {post && post?.title}
@@ -42,7 +42,7 @@ const LatestArticles = ({ articles }: Props) => {
                 <p className="mb-3 text-sm font-normal text-gray-100">
                   {post && post?.excerpt}
                 </p>
-                <Link href={`blogs/articles/${post.slug.current}`} className="btn btn-light btn-sm">
+                <Link href={`/blogs/articles/${post.slug.current}`} className="btn btn-light btn-sm">
                   Read More
                 </Link>
               </div>
