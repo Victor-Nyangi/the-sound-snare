@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import MusicBg from "/public/images/music.jpg";
-import SpotifyIcon from "/public/images/spotify-icon.png";
+import MusicBg from "../../../public/images/music.jpg";
+import SpotifyIcon from "../../../public/images/spotify-icon.png";
 import { getPodcasts, getYouTubeChannels } from "../../lib/sanity";
 import SEO from "@/components/SEO";
 

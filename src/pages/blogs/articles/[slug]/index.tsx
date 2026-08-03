@@ -7,7 +7,7 @@ import type { NextPageWithLayout } from "../../../_app";
 import { ArticleTypeI } from "../../../../../types";
 import { GetStaticPropsResult } from "next";
 import Spinner from "@/components/Spinner";
-import { PortableText } from "@portabletext/react";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import OtherArticles from "@/components/Blog/OtherArticles";
 import { categoryMap, client, reverseCategoryMap } from "@/lib/sanity";
@@ -36,11 +36,12 @@ const Article: NextPageWithLayout<Props> = ({
   postData,
   otherPosts,
 }: Props) => {
-  const components = {
+  // @portabletext/react v3 replaced the v2 `props.node` shape with `value`.
+  const components: PortableTextComponents = {
     types: {
-      code: (props: any) => (
-        <pre data-language={props.node.language}>
-          <code>{props.node.code}</code>
+      code: ({ value }) => (
+        <pre data-language={value.language}>
+          <code>{value.code}</code>
         </pre>
       ),
     },
