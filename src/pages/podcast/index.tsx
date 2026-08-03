@@ -4,6 +4,7 @@ import Link from "next/link";
 import MusicBg from "/public/images/music.jpg";
 import SpotifyIcon from "/public/images/spotify-icon.png";
 import { getPodcasts, getYouTubeChannels } from "../../lib/sanity";
+import SEO from "@/components/SEO";
 
 export async function getStaticProps() {
   const podcasts = await getPodcasts();
@@ -46,6 +47,11 @@ type PodcastPageProps = {
 const PodcastPage = ({ podcasts, youtubeChannels }: PodcastPageProps) => {
   return (
     <>
+      <SEO
+        title="Podcast — Sound Snare"
+        description="Spotify podcasts and YouTube channels curated by Sound Snare."
+        canonical="/podcast"
+      />
       <div className="bg-black min-h-screen sm:grid sm:grid-cols-3 ">
         <section className="relative bg-white sm:col-span-2">
           <Image
@@ -126,10 +132,11 @@ const PodcastPage = ({ podcasts, youtubeChannels }: PodcastPageProps) => {
                     podcasts.map((podcast: Podcast) => (
                       <li key={podcast._id} className="border-b pb-2">
                         {podcast.coverImage?.asset?.url && (
-                          <img
+                          <Image
                             src={podcast.coverImage.asset.url}
                             alt={podcast.title}
                             width={80}
+                            height={80}
                             className="mb-2 rounded"
                           />
                         )}
@@ -198,10 +205,11 @@ const PodcastPage = ({ podcasts, youtubeChannels }: PodcastPageProps) => {
                     youtubeChannels.map((channel: YouTubeChannel) => (
                       <li key={channel._id} className="border-b pb-2">
                         {channel.thumbnail?.asset?.url && (
-                          <img
+                          <Image
                             src={channel.thumbnail.asset.url}
                             alt={channel.title}
                             width={80}
+                            height={80}
                             className="mb-2 rounded"
                           />
                         )}

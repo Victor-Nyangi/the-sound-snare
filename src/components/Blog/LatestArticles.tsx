@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import moment from "moment";
 import { ArticleTypeI } from "../../../types";
+import { formatDate } from "@/lib/formatDate";
 
 type Props = {
   articles: ArticleTypeI[];
@@ -20,16 +20,16 @@ const LatestArticles = ({ articles }: Props) => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-4" key={index}>
               <Image
                 src={post.mainImage.asset.url}
-                width={100}
-                height={40}
-                unoptimized
+                width={400}
+                height={160}
+                sizes="(max-width: 768px) 100vw, 25vw"
                 className="object-cover rounded w-full h-40 col-span-1 bg-center"
-                alt="Blogs"
+                alt={post.title}
                 loading="lazy"
               />
               <div className="col-span-1 md:col-span-3">
                 <p className="mb-2 -mt-1 text-sm font-normal text-gray-300">
-                  {moment(post._createdAt).format("dddd, MMMM Do YYYY")}
+                  {formatDate(post._createdAt)}
                 </p>
                 <h2 className="mb-2 text-xl font-extrabold leading-snug text-gray-200">
                   <Link

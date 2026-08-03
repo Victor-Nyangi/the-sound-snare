@@ -1,8 +1,12 @@
 import Head from "next/head";
 
-interface SEOProps {
-  title: string;
-  description: string;
+export const DEFAULT_TITLE = "Sound Snare";
+export const DEFAULT_DESCRIPTION =
+  "A blog addressing health, nutrition, religion, survival skills and life.";
+
+export interface SEOProps {
+  title?: string;
+  description?: string;
   canonical?: string;
   ogImage?: string;
   ogType?: string;
@@ -11,8 +15,8 @@ interface SEOProps {
 }
 
 export const SEO: React.FC<SEOProps> = ({
-  title,
-  description,
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
   canonical,
   ogImage = "/images/default-og.jpg",
   ogType = "website",
@@ -26,8 +30,10 @@ export const SEO: React.FC<SEOProps> = ({
   return (
     <Head>
       <title>{title}</title>
+      <meta charSet="utf-8" />
       <meta name="description" content={description} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="icon" href="/favicon.ico" />
 
       {/* Canonical URL */}
       {canonical && <link rel="canonical" href={fullUrl} />}

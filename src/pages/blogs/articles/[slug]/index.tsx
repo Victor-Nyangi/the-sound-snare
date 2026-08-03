@@ -8,10 +8,11 @@ import { ArticleTypeI } from "../../../../../types";
 import { GetStaticPropsResult } from "next";
 import Spinner from "@/components/Spinner";
 import { PortableText } from "@portabletext/react";
-import moment from "moment";
 import Image from "next/image";
 import OtherArticles from "@/components/Blog/OtherArticles";
 import { categoryMap, client, reverseCategoryMap } from "@/lib/sanity";
+import SEO, { DEFAULT_DESCRIPTION } from "@/components/SEO";
+import { formatDate } from "@/lib/formatDate";
 
 type Props = {
   postData: ArticleTypeI;
@@ -49,6 +50,13 @@ const Article: NextPageWithLayout<Props> = ({
 
   return (
     <>
+      <SEO
+        title={`${postData.title} — Sound Snare`}
+        description={postData.excerpt ?? DEFAULT_DESCRIPTION}
+        canonical={`/blogs/articles/${postData.slug.current}`}
+        ogImage={postData.mainImage?.asset?.url}
+        ogType="article"
+      />
       <Header path={ArticleImg} color="white" />
 
       <article
@@ -66,9 +74,7 @@ const Article: NextPageWithLayout<Props> = ({
             >
               {postData?.title}
             </h1>
-            <p className="text-base text-gray-500">{`${moment(
-              postData._createdAt
-            ).format("dddd, MMMM Do YYYY")} - Written by ${postData?.name}`}</p>
+            <p className="text-base text-gray-500">{`${formatDate(postData._createdAt)} - Written by ${postData?.name}`}</p>
           </div>
           {/* <div className="flex items-center mb-6 space-x-2">
             <p className="text-gray-600">Share this article</p>
@@ -114,8 +120,9 @@ const Article: NextPageWithLayout<Props> = ({
             src={postData.mainImage.asset.url}
             className="object-cover w-full h-64 bg-center rounded"
             alt={postData?.title}
-            width={500}
-            height={100}
+            width={1200}
+            height={256}
+            sizes="(max-width: 768px) 100vw, 75vw"
             priority
           />
         </div>

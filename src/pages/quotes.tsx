@@ -106,7 +106,11 @@ const Quotes: NextPageWithLayout<Props> = ({ quotes }: Props) => {
 
 Quotes.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Layout>
+    <Layout
+      title="Quotes — Sound Snare"
+      description="Wise words from pioneers and greats in their respective fields."
+      canonical="/quotes"
+    >
       <NestedLayout>{page}</NestedLayout>
     </Layout>
   );

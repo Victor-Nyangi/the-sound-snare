@@ -310,7 +310,11 @@ const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
 
 Blog.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Layout>
+    <Layout
+      title="Blog — Sound Snare"
+      description="Content for all kinds of readers, irrespective of age and culture."
+      canonical="/blogs"
+    >
       <NestedLayout>{page}</NestedLayout>
     </Layout>
   );

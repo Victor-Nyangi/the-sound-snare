@@ -1,17 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
-import Meta from "@/components/Meta";
+import SEO from "@/components/SEO";
 
 export default function Home() {
   return (
     <>
-      <Meta />
+      <SEO
+        title="Sound Snare — peace of thought and the sound of calm"
+        description="A blog and podcast on health, nutrition, religion, survival skills and life."
+        canonical="/"
+      />
       <main className="App">
         <section className="relative bg-white">
-          <img
-            className="absolute inset-0  sm:object-[25%] object-cover w-full h-full sm:opacity-100"
+          <Image
+            className="absolute inset-0 sm:object-[25%] object-cover w-full h-full sm:opacity-100"
             src="/sound-snare-bg.jpg"
             alt="The thoughts I have, the music I hear."
+            fill
+            sizes="100vw"
+            priority
           />
 
           <div className="hidden sm:block sm:inset-0 sm:absolute"></div>

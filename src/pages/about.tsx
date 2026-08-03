@@ -136,7 +136,11 @@ const About: NextPageWithLayout = () => {
 
 About.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Layout>
+    <Layout
+      title="About — Sound Snare"
+      description="Full stack development, cloud engineering, data architecture and machine learning."
+      canonical="/about"
+    >
       <NestedLayout>{page}</NestedLayout>
     </Layout>
   );

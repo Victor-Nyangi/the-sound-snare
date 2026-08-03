@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import moment from "moment";
 import { ArticleTypeI } from "../../../types";
+import { formatDate } from "@/lib/formatDate";
 
 type Props = {
   articles: ArticleTypeI[];
