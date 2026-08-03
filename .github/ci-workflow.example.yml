@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      sanityprojectId: ${{ secrets.SANITY_PROJECT_ID }}
+      sanitydataset: ${{ secrets.SANITY_DATASET }}
+      sanityapiVersion: ${{ secrets.SANITY_API_VERSION }}
+      quotesRef: ${{ secrets.SANITY_QUOTES_REF }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+
+      - run: pnpm typecheck
+
+      - run: pnpm format:check
+
+      # Compiles and type-checks the app. Static prerendering additionally
+      # needs to reach the Sanity API, so this step is skipped where the
+      # repository secrets are unavailable (e.g. forked pull requests).
+      - name: Build
+        if: ${{ env.sanityprojectId != '' }}
+        run: pnpm build
+
+# ---------------------------------------------------------------------------
+# To activate: move this file to .github/workflows/ci.yml and commit it.
+# It could not be committed to that path here because the session's GitHub
+# token lacks the `workflow` scope.
+#
+# It also expects four repository secrets: SANITY_PROJECT_ID, SANITY_DATASET,
+# SANITY_API_VERSION and SANITY_QUOTES_REF.
+# ---------------------------------------------------------------------------
