@@ -10,8 +10,7 @@ export type Children = {
   _type: string;
   marks: Array<null>;
   text: string;
-
-}
+};
 
 export type ArticleBody = {
   _key: string;
@@ -19,7 +18,7 @@ export type ArticleBody = {
   children: Children[];
   markDefs: Array<null>;
   style: string;
-}
+};
 
 export type Slug = {
   _type: string;

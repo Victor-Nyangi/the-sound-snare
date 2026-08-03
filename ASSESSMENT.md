@@ -15,12 +15,12 @@ user-visible bugs** shipping in production today.
 
 Where to spend effort, in order:
 
-| Priority | Theme | Effort | Why |
-|---|---|---|---|
-| **P0** | 4 live bugs (broken links, missing page titles, unstyled nav, new posts never appear) | ~half a day | Users hit these now |
-| **P1** | Drop `next-sanity` → `@sanity/client`; delete dead code | ~half a day | 1238 → ~250 packages; removes 1/3 of `src/` |
-| **P2** | Dependency upgrades (Next 16, ESLint flat config) | 1–2 days | `next lint` is removed in Next 16 — blocking for any later upgrade |
-| **P3** | Test/CI baseline, SEO infrastructure | 1–2 days | Nothing currently guards regressions |
+| Priority | Theme                                                                                 | Effort      | Why                                                                |
+| -------- | ------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------ |
+| **P0**   | 4 live bugs (broken links, missing page titles, unstyled nav, new posts never appear) | ~half a day | Users hit these now                                                |
+| **P1**   | Drop `next-sanity` → `@sanity/client`; delete dead code                               | ~half a day | 1238 → ~250 packages; removes 1/3 of `src/`                        |
+| **P2**   | Dependency upgrades (Next 16, ESLint flat config)                                     | 1–2 days    | `next lint` is removed in Next 16 — blocking for any later upgrade |
+| **P3**   | Test/CI baseline, SEO infrastructure                                                  | 1–2 days    | Nothing currently guards regressions                               |
 
 Note on verification: the sandbox proxy blocks `*.api.sanity.io`, so `next build` completes
 compilation and type-checking but fails at the static-prerender step. Everything below was verified by
@@ -33,23 +33,23 @@ registry. The build failure is an environment limitation, not a project defect.
 
 Installed versions vs. latest on the registry as of 2026-08-03:
 
-| Package | Installed | Latest | Gap | Notes |
-|---|---|---|---|---|
-| `next` | 15.3.4 | 16.2.12 | **1 major** | `next lint` removed in 16 — the `lint` script breaks on upgrade |
-| `react` / `react-dom` | 19.1.0 | 19.2.8 | patch | Safe, do it now |
-| `sanity` | ^4.0.1 | 6.8.0 | **2 majors** | Studio package — **not imported anywhere**, see §3 |
-| `next-sanity` | ^9.12.0 | 13.2.3 | **4 majors** | Only `createClient` is used — should be replaced, see §3 |
-| `@portabletext/react` | ^2.0.3 | 7.0.1 | **5 majors** | Renders every article body; upgrade carefully |
-| `eslint` | ^9.30.0 | 10.8.0 | **1 major** | Also in the wrong dependency block, see §4 |
-| `eslint-config-next` | ^15.3.4 | 16.2.12 | **1 major** | Must move in lockstep with `next` |
-| `typescript` | ^5.8.3 | 7.0.2 | **2 majors** | TS 7 is the native-port compiler; treat as its own task |
-| `@types/node` | ^24.0.7 | 26.1.2 | 2 majors | Match to the deployed Node runtime, not to latest |
-| `@types/react` | ^19.1.8 | 19.2.18 | minor | Bump with React |
-| `@types/react-dom` | ^19.1.6 | 19.2.4 | minor | Bump with React |
-| `tailwindcss` / `@tailwindcss/postcss` | ^4.1.11 | 4.3.3 | minor | Safe |
-| `postcss` | ^8.5.6 | 8.5.25 | patch | Unused directly — see §4 |
-| `autoprefixer` | ^10.4.21 | 10.5.4 | minor | **Unused** — Tailwind v4 handles this |
-| `moment` | ^2.30.1 | 2.30.1 | current | Project is in maintenance mode upstream; see §5 |
+| Package                                | Installed | Latest  | Gap          | Notes                                                           |
+| -------------------------------------- | --------- | ------- | ------------ | --------------------------------------------------------------- |
+| `next`                                 | 15.3.4    | 16.2.12 | **1 major**  | `next lint` removed in 16 — the `lint` script breaks on upgrade |
+| `react` / `react-dom`                  | 19.1.0    | 19.2.8  | patch        | Safe, do it now                                                 |
+| `sanity`                               | ^4.0.1    | 6.8.0   | **2 majors** | Studio package — **not imported anywhere**, see §3              |
+| `next-sanity`                          | ^9.12.0   | 13.2.3  | **4 majors** | Only `createClient` is used — should be replaced, see §3        |
+| `@portabletext/react`                  | ^2.0.3    | 7.0.1   | **5 majors** | Renders every article body; upgrade carefully                   |
+| `eslint`                               | ^9.30.0   | 10.8.0  | **1 major**  | Also in the wrong dependency block, see §4                      |
+| `eslint-config-next`                   | ^15.3.4   | 16.2.12 | **1 major**  | Must move in lockstep with `next`                               |
+| `typescript`                           | ^5.8.3    | 7.0.2   | **2 majors** | TS 7 is the native-port compiler; treat as its own task         |
+| `@types/node`                          | ^24.0.7   | 26.1.2  | 2 majors     | Match to the deployed Node runtime, not to latest               |
+| `@types/react`                         | ^19.1.8   | 19.2.18 | minor        | Bump with React                                                 |
+| `@types/react-dom`                     | ^19.1.6   | 19.2.4  | minor        | Bump with React                                                 |
+| `tailwindcss` / `@tailwindcss/postcss` | ^4.1.11   | 4.3.3   | minor        | Safe                                                            |
+| `postcss`                              | ^8.5.6    | 8.5.25  | patch        | Unused directly — see §4                                        |
+| `autoprefixer`                         | ^10.4.21  | 10.5.4  | minor        | **Unused** — Tailwind v4 handles this                           |
+| `moment`                               | ^2.30.1   | 2.30.1  | current      | Project is in maintenance mode upstream; see §5                 |
 
 ### Suggested upgrade ordering
 
@@ -68,6 +68,7 @@ Installed versions vs. latest on the registry as of 2026-08-03:
 ## 2. P0 — Bugs live in production
 
 ### 2.1 Article links on the blog index go to the wrong URL
+
 `src/components/Blog/LatestArticles.tsx:36` and `:47`
 
 ```tsx
@@ -81,14 +82,15 @@ Neither is an absolute path. The headline link on `/blogs` resolves to `/<slug>`
 blog index is broken.**
 
 ### 2.2 Every page has an empty `<title>` (React 19 regression)
+
 `src/components/Meta.tsx:22-26`
 
 ```tsx
 Meta.defaultProps = {
-  title: 'Sound Snare blog',
-  keywords: 'blog, health, podcast',
-  description: '...',
-}
+  title: "Sound Snare blog",
+  keywords: "blog, health, podcast",
+  description: "...",
+};
 ```
 
 React 19 **removed `defaultProps` support for function components.** `Layout.tsx` renders `<Meta />`
@@ -97,6 +99,7 @@ page title and no meta description sitewide. This is pure SEO damage and it is i
 TypeScript, which still honours `defaultProps` at the type level. Fix with ES default parameters.
 
 ### 2.3 Header navigation text is unstyled
+
 `src/components/Header.tsx:29, 34, 69, 75`
 
 ```tsx
@@ -108,6 +111,7 @@ into the CSS bundle. Every caller passes `color="white"`, and the nav renders in
 against dark hero images. Pass complete class strings instead of interpolating fragments.
 
 ### 2.4 New Sanity posts never appear until a redeploy
+
 `src/pages/blogs/articles/[slug]/index.tsx:158` and `src/pages/blogs/category/[slug]/index.tsx`
 
 Both use `fallback: false` in `getStaticPaths`. For a CMS-backed blog this means any post published
@@ -143,7 +147,7 @@ Two compounding problems:
    `defineConfig`, no Studio route. It is 36 MB on disk and drags in `date-fns` twice (58 MB),
    `hls.js` (24 MB), and `rxjs` (12 MB).
 2. **Removing it from `package.json` does not help.** `next-sanity@9` declares `sanity` as a
-   *required, non-optional* peer dependency, so pnpm reinstalls it regardless. Verified: deleting it
+   _required, non-optional_ peer dependency, so pnpm reinstalls it regardless. Verified: deleting it
    from `package.json` took the tree from 1238 → 1237 packages.
 
 **The fix is to stop depending on `next-sanity` at all.** Swap the four imports to `@sanity/client`,
@@ -173,19 +177,19 @@ src/pages/api/otherposts/[categslug]/[slug].ts  src/pages/api/hello.ts   ← cre
 
 Other dead weight:
 
-| File | Issue |
-|---|---|
-| `src/client.ts` | Unused. Also **hardcodes `projectId: "l0s21o0s"`**, which contradicts `next.config.js` (`x1bgmc3m`). One of the two is stale — worth resolving before it misleads someone. |
-| `src/lib/cache.ts` | **Empty file.** |
-| `src/lib/analytics.ts` | Never imported. Also references `NEXT_PUBLIC_GA_ID`, which is absent from `.env.example`. |
-| `src/components/SEO.tsx` | Never imported — and it is strictly better than the `Meta.tsx` actually in use (OG tags, Twitter cards, canonicals). Adopting it would fix §2.2 and improve SEO in one move. |
-| `src/components/Skeleton.tsx` | Never imported. |
-| `src/components/ErrorBoundary.tsx` | Never imported — `_app.tsx` does not wrap anything in it. |
-| `src/styles/Home.module.css` | 278 lines, never imported. |
-| `tailwind.config.js` | **Silently ignored.** Tailwind v4 is CSS-first; a JS config is only read via an explicit `@config` directive, and `globals.css` contains only `@import 'tailwindcss'`. The `content` globs do nothing. |
-| `additional.d.ts` | `/// <reference types="next-images" />` — `next-images` is not installed. |
-| `config/index.ts` | Exports a hardcoded `server` constant; the `dev`/`prodUrl` logic above it is commented out. Imported by `blogs/index.tsx` and `quotes.tsx` but unused in both. |
-| `autoprefixer`, `postcss` | In `devDependencies` but absent from `postcss.config.mjs`. Tailwind v4 vendors its own pipeline. |
+| File                               | Issue                                                                                                                                                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/client.ts`                    | Unused. Also **hardcodes `projectId: "l0s21o0s"`**, which contradicts `next.config.js` (`x1bgmc3m`). One of the two is stale — worth resolving before it misleads someone.                             |
+| `src/lib/cache.ts`                 | **Empty file.**                                                                                                                                                                                        |
+| `src/lib/analytics.ts`             | Never imported. Also references `NEXT_PUBLIC_GA_ID`, which is absent from `.env.example`.                                                                                                              |
+| `src/components/SEO.tsx`           | Never imported — and it is strictly better than the `Meta.tsx` actually in use (OG tags, Twitter cards, canonicals). Adopting it would fix §2.2 and improve SEO in one move.                           |
+| `src/components/Skeleton.tsx`      | Never imported.                                                                                                                                                                                        |
+| `src/components/ErrorBoundary.tsx` | Never imported — `_app.tsx` does not wrap anything in it.                                                                                                                                              |
+| `src/styles/Home.module.css`       | 278 lines, never imported.                                                                                                                                                                             |
+| `tailwind.config.js`               | **Silently ignored.** Tailwind v4 is CSS-first; a JS config is only read via an explicit `@config` directive, and `globals.css` contains only `@import 'tailwindcss'`. The `content` globs do nothing. |
+| `additional.d.ts`                  | `/// <reference types="next-images" />` — `next-images` is not installed.                                                                                                                              |
+| `config/index.ts`                  | Exports a hardcoded `server` constant; the `dev`/`prodUrl` logic above it is commented out. Imported by `blogs/index.tsx` and `quotes.tsx` but unused in both.                                         |
+| `autoprefixer`, `postcss`          | In `devDependencies` but absent from `postcss.config.mjs`. Tailwind v4 vendors its own pipeline.                                                                                                       |
 
 Deleting all of the above removes ~15 files and 4 dependencies with zero behaviour change.
 
@@ -271,7 +275,7 @@ Independently shippable, no dependency changes, immediately visible to users.
 `.env.example`. Large diff, near-zero behavioural risk.
 
 **Phase 3 — Guardrails (~1 day).** ESLint flat config, Prettier, a GitHub Actions workflow running
-lint + typecheck + build. Do this *before* Phase 4 so the upgrades have something catching them.
+lint + typecheck + build. Do this _before_ Phase 4 so the upgrades have something catching them.
 
 **Phase 4 — Upgrades (~1–2 days).** Following the ordering in §1. Next 16 and
 `@portabletext/react` 7 are the two that need real attention; the rest are mechanical.

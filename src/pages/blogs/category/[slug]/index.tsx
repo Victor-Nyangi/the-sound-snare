@@ -14,11 +14,11 @@ import { client, reverseCategoryMap } from "@/lib/sanity";
 
 // Static category data for reliable build-time path generation
 const STATIC_CATEGORIES = [
-  'general-life',
-  'religion', 
-  'health',
-  'nutrition',
-  'survival-skills'
+  "general-life",
+  "religion",
+  "health",
+  "nutrition",
+  "survival-skills",
 ];
 
 type Props = {
@@ -142,7 +142,7 @@ export const getStaticPaths = async () => {
   const paths = STATIC_CATEGORIES.map((slug) => ({
     params: { slug },
   }));
-  
+
   return {
     paths,
     fallback: false,
@@ -153,15 +153,16 @@ export async function getStaticProps(
   context: Context
 ): Promise<GetStaticPropsResult<Props>> {
   const { slug } = context.params;
-  
+
   try {
     // Get the category ref from the slug
     const categoryRef = reverseCategoryMap.get(slug);
     if (!categoryRef) {
       return { notFound: true };
     }
-    
-    const articles = await client.fetch(`
+
+    const articles = await client.fetch(
+      `
       *[_type == "post" && categories[0]._ref == $categoryRef]{
         title,
         slug,
@@ -172,8 +173,10 @@ export async function getStaticProps(
         _createdAt,
         "name": author->name,
       }
-    `, { categoryRef });
-    
+    `,
+      { categoryRef }
+    );
+
     return {
       props: {
         articles: articles || [],
@@ -181,8 +184,8 @@ export async function getStaticProps(
       revalidate: 3600, // Revalidate every hour
     };
   } catch (error) {
-    console.error('Error in getStaticProps for category:', slug, error);
-    return { 
+    console.error("Error in getStaticProps for category:", slug, error);
+    return {
       props: { articles: [] },
       revalidate: 3600,
     };
