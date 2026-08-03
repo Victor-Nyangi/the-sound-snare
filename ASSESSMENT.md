@@ -4,6 +4,16 @@
 **Branch assessed:** `claude/project-assessment-report-23mfcm` (at `ff3a642`)
 **Stack:** Next.js 15.3.4 (Pages Router) · React 19.1 · TypeScript 5.8 · Tailwind v4 · Sanity CMS · pnpm
 
+> **Status:** this document describes the state at `ff3a642`. Phases 1–5 below have
+> since been implemented on this branch. Two things were **not** done and remain open:
+> TypeScript 5 → 7, and ESLint 9 → 10 (blocked: `eslint-config-next@16` bundles a
+> TypeScript parser that crashes under ESLint 10).
+>
+> One correction to §2.4: only the **article** route needed `fallback: 'blocking'`.
+> The category route enumerates all five categories at build time and returns
+> `notFound` for anything else, so `fallback: false` is correct there and was left
+> alone.
+
 ---
 
 ## Executive summary
