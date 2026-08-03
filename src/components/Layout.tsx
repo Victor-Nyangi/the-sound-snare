@@ -7,7 +7,7 @@ const Layout = ({ children }: Props) => {
   return (
     <>
       <Meta />
-          {children}
+      {children}
     </>
   );
 };

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Meta from "@/components/Meta";
 
-
 export default function Home() {
   return (
     <>

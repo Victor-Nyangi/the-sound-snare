@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface SkeletonProps {
   className?: string;
@@ -7,9 +7,12 @@ interface SkeletonProps {
 
 // Deterministic widths: Math.random() during render produces different markup
 // on the server and the client, which triggers a hydration mismatch.
-const LINE_WIDTHS = ['100%', '75%', '85%', '65%', '95%', '70%'];
+const LINE_WIDTHS = ["100%", "75%", "85%", "65%", "95%", "70%"];
 
-export const Skeleton: React.FC<SkeletonProps> = ({ className = '', lines = 1 }) => {
+export const Skeleton: React.FC<SkeletonProps> = ({
+  className = "",
+  lines = 1,
+}) => {
   return (
     <div className={`animate-pulse ${className}`}>
       {Array.from({ length: lines }).map((_, index) => (
@@ -36,4 +39,4 @@ export const ArticleSkeleton: React.FC = () => {
   );
 };
 
-export default Skeleton; 
+export default Skeleton;

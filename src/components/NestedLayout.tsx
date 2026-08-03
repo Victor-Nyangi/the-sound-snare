@@ -6,7 +6,7 @@ type Props = {
 const NestedLayout = ({ children }: Props) => {
   return (
     <>
-          {children}
+      {children}
       <Footer />
     </>
   );

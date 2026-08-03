@@ -4,7 +4,6 @@ import NestedLayout from "@/components/NestedLayout";
 import type { NextPageWithLayout } from "./../_app";
 import Header from "../../components/Header";
 
-
 import Link from "next/link";
 import Image from "next/image";
 import { ArticleTypeI } from "../../../types";
@@ -12,11 +11,10 @@ import LatestArticles from "@/components/Blog/LatestArticles";
 import { client } from "../../lib/sanity";
 
 type Props = {
-  articles: ArticleTypeI[]
-}
+  articles: ArticleTypeI[];
+};
 
 const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
-
   return (
     <>
       <Header path="/images/blogs.jpg" color="white" />
@@ -72,7 +70,7 @@ const Blog: NextPageWithLayout<Props> = ({ articles }: Props) => {
         </div>
       </div>
 
-    <LatestArticles articles={articles} />
+      <LatestArticles articles={articles} />
 
       <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
         <div className="flex flex-col mb-6 lg:justify-between lg:flex-row md:mb-8">
@@ -336,6 +334,6 @@ export const getStaticProps = async () => {
     },
     revalidate: 1800, // Revalidate every 30 minutes
   };
-}
+};
 
 export default Blog;

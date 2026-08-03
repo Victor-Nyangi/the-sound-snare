@@ -60,7 +60,10 @@ const Header = ({ path, color = "white" }: Props) => {
                 >
                   Nutrition
                 </Link>
-                <Link href="/blogs/category/health" className="mr-5 hover:text-blue-600">
+                <Link
+                  href="/blogs/category/health"
+                  className="mr-5 hover:text-blue-600"
+                >
                   Health
                 </Link>
                 <Link
@@ -95,6 +98,5 @@ const Header = ({ path, color = "white" }: Props) => {
     </>
   );
 };
-
 
 export default Header;

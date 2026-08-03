@@ -42,7 +42,10 @@ const LatestArticles = ({ articles }: Props) => {
                 <p className="mb-3 text-sm font-normal text-gray-100">
                   {post && post?.excerpt}
                 </p>
-                <Link href={`/blogs/articles/${post.slug.current}`} className="btn btn-light btn-sm">
+                <Link
+                  href={`/blogs/articles/${post.slug.current}`}
+                  className="btn btn-light btn-sm"
+                >
                   Read More
                 </Link>
               </div>
