@@ -26,9 +26,9 @@ const Header = ({ path, color = "white" }: Props) => {
         <Image
           className="absolute bg-center inset-0 object-[75%] sm:object-[25%] object-cover w-full h-full opacity-100 sm:opacity-100"
           src={path}
-          width={500}
-          height={100}
-          unoptimized
+          fill
+          sizes="100vw"
+          priority
           alt="The thoughts I have, the music I hear."
         />
         <div className="hidden sm:block sm:inset-0 sm:absolute"></div>

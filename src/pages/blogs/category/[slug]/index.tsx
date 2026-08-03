@@ -8,9 +8,10 @@ import Header from "@/components/Header";
 
 import Link from "next/link";
 import Image from "next/image";
-import moment from "moment";
 import { ArticleTypeI } from "../../../../../types";
 import { client, reverseCategoryMap } from "@/lib/sanity";
+import SEO from "@/components/SEO";
+import { formatDate } from "@/lib/formatDate";
 
 // Static category data for reliable build-time path generation
 const STATIC_CATEGORIES = [
@@ -23,6 +24,16 @@ const STATIC_CATEGORIES = [
 
 type Props = {
   articles: ArticleTypeI[];
+  slug: string;
+};
+
+// Slug -> human-readable name, for page titles.
+const CATEGORY_LABELS: Record<string, string> = {
+  "general-life": "General life",
+  religion: "Religion",
+  health: "Health",
+  nutrition: "Nutrition",
+  "survival-skills": "Survival skills",
 };
 
 interface Context {
@@ -31,9 +42,15 @@ interface Context {
   };
 }
 
-const Category: NextPageWithLayout<Props> = ({ articles }: Props) => {
+const Category: NextPageWithLayout<Props> = ({ articles, slug }: Props) => {
+  const label = CATEGORY_LABELS[slug] ?? "Blog";
   return (
     <>
+      <SEO
+        title={`${label} — Sound Snare`}
+        description={`Articles on ${label.toLowerCase()} from Sound Snare.`}
+        canonical={`/blogs/category/${slug}`}
+      />
       <Header path="/images/general_life.jpg" color="white" />
 
       <section className="px-4 py-24 mx-auto max-w-7xl">
@@ -74,15 +91,15 @@ const Category: NextPageWithLayout<Props> = ({ articles }: Props) => {
           {articles &&
             articles.map((post: ArticleTypeI, index: number) => (
               <div key={post.slug.current}>
-                <Link href={post.slug.current}>
+                <Link href={`/blogs/articles/${post.slug.current}`}>
                   <Image
                     src={post.mainImage.asset.url}
-                    alt="General stuff"
+                    alt={post.title}
                     className="object-cover w-full h-56 mb-5 bg-center rounded"
                     loading="lazy"
-                    width={500}
-                    height={100}
-                    unoptimized
+                    width={600}
+                    height={224}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                   />
                 </Link>
                 <h2 className="mb-2 text-lg font-semibold text-gray-900">
@@ -103,9 +120,7 @@ const Category: NextPageWithLayout<Props> = ({ articles }: Props) => {
                   >
                     {post?.name}
                   </Link>
-                  <span className="ml-2">
-                    {moment(post._createdAt).format("dddd, MMMM Do YYYY")}
-                  </span>
+                  <span className="ml-2">{formatDate(post._createdAt)}</span>
                 </p>
               </div>
             ))}
@@ -180,13 +195,14 @@ export async function getStaticProps(
     return {
       props: {
         articles: articles || [],
+        slug,
       },
       revalidate: 3600, // Revalidate every hour
     };
   } catch (error) {
     console.error("Error in getStaticProps for category:", slug, error);
     return {
-      props: { articles: [] },
+      props: { articles: [], slug },
       revalidate: 3600,
     };
   }

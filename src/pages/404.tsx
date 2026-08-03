@@ -25,7 +25,7 @@ const NotFound: NextPageWithLayout = () => {
 
 NotFound.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Layout>
+    <Layout title="Page not found — Sound Snare" noIndex>
       <NestedLayout>{page}</NestedLayout>
     </Layout>
   );

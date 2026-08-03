@@ -1,12 +1,16 @@
-import Meta from "./Meta";
-type Props = {
+import SEO, { type SEOProps } from "./SEO";
+
+type Props = SEOProps & {
   children?: React.ReactNode;
 };
 
-const Layout = ({ children }: Props) => {
+// Renders site-wide defaults. Pages with their own <SEO> (e.g. articles)
+// render it inside their body, where next/head's dedupe lets the more
+// specific tags win.
+const Layout = ({ children, ...seo }: Props) => {
   return (
     <>
-      <Meta />
+      <SEO {...seo} />
       {children}
     </>
   );
