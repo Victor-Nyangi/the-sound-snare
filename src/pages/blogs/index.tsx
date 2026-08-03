@@ -1,5 +1,4 @@
 import type { ReactElement } from "react";
-import { server } from '../../../config'
 import Layout from "@/components/Layout";
 import NestedLayout from "@/components/NestedLayout";
 import type { NextPageWithLayout } from "./../_app";
