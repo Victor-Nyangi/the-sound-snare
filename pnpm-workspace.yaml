@@ -1,0 +1,5 @@
+allowBuilds:
+  # Next.js image optimization pipeline; needs its postinstall to link native binaries.
+  sharp: true
+  # Native resolver behind eslint-import-resolver-typescript (via eslint-config-next).
+  unrs-resolver: true
