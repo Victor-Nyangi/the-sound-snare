@@ -2,12 +2,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { StaticImageData } from "next/image";
 
+type HeaderColor = "white" | "black";
+
 type Props = {
   path: StaticImageData | string;
-  color?: string;
+  color?: HeaderColor;
 };
 
-const Header = ({ path, color }: Props) => {
+// Tailwind scans source for complete class names, so an interpolated
+// "text-" fragment never makes it into the CSS bundle. Map to whole
+// class strings instead.
+const TEXT_COLOR: Record<HeaderColor, string> = {
+  white: "text-white",
+  black: "text-black",
+};
+
+const Header = ({ path, color = "white" }: Props) => {
+  const textColor = TEXT_COLOR[color];
+
   return (
     <>
       <section className="relative bg-white py-20 sm:pt-10">
@@ -26,12 +38,12 @@ const Header = ({ path, color }: Props) => {
             <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
               <Link
                 href="/"
-                className={`flex title-font font-medium items-center text-${color} hover:text-green-600 mb-4 md:mb-0`}
+                className={`flex title-font font-medium items-center ${textColor} hover:text-green-600 mb-4 md:mb-0`}
               >
                 <span className="ml-3 text-xl">Home</span>
               </Link>
               <nav
-                className={`md:ml-auto md:mr-auto flex flex-wrap items-center text-${color} justify-center`}
+                className={`md:ml-auto md:mr-auto flex flex-wrap items-center ${textColor} justify-center`}
               >
                 <Link href="/quotes" className="mr-5 hover:text-blue-600">
                   Quotes
@@ -66,13 +78,13 @@ const Header = ({ path, color }: Props) => {
               </nav>
               <Link
                 href="/podcast"
-                className={`mr-5 text-${color} hover:text-blue-600`}
+                className={`mr-5 ${textColor} hover:text-blue-600`}
               >
                 Podcast
               </Link>
               <Link
                 href="/about"
-                className={`mr-5 text-${color} hover:text-blue-600`}
+                className={`mr-5 ${textColor} hover:text-blue-600`}
               >
                 About
               </Link>

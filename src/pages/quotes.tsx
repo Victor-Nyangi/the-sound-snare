@@ -122,6 +122,7 @@ Quotes.getLayout = function getLayout(page: ReactElement) {
       props: {
         quotes,
       },
+      revalidate: 3600, // Revalidate every hour
     };
   }
 

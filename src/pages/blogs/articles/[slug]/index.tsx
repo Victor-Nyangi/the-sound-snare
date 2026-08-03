@@ -153,11 +153,13 @@ export const getStaticPaths = async () => {
 
     return {
       paths,
-      fallback: false,
+      // 'blocking' so posts published after the last build are rendered on
+      // first request instead of 404ing until the next deploy.
+      fallback: "blocking",
     };
   } catch (error) {
     console.error("Error fetching paths:", error);
-    return { paths: [], fallback: false };
+    return { paths: [], fallback: "blocking" };
   }
 };
 
@@ -185,8 +187,6 @@ export async function getStaticProps(
     `,
       { slug }
     );
-    console.log(postData, "postData");
-
     if (!postData) {
       return { notFound: true };
     }

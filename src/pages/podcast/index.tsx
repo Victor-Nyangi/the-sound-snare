@@ -8,7 +8,10 @@ import { getPodcasts, getYouTubeChannels } from "../../lib/sanity";
 export async function getStaticProps() {
   const podcasts = await getPodcasts();
   const youtubeChannels = await getYouTubeChannels();
-  return { props: { podcasts, youtubeChannels } };
+  return {
+    props: { podcasts, youtubeChannels },
+    revalidate: 3600, // Revalidate every hour
+  };
 }
 
 type Episode = {
