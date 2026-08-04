@@ -5,9 +5,19 @@
 **Stack:** Next.js 15.3.4 (Pages Router) · React 19.1 · TypeScript 5.8 · Tailwind v4 · Sanity CMS · pnpm
 
 > **Status:** this document describes the state at `ff3a642`. Phases 1–5 below have
-> since been implemented on this branch. Two things were **not** done and remain open:
-> TypeScript 5 → 7, and ESLint 9 → 10 (blocked: `eslint-config-next@16` bundles a
-> TypeScript parser that crashes under ESLint 10).
+> since been implemented, and TypeScript has moved 5.9 → **6.0.3**.
+>
+> Two upgrades remain blocked upstream, both on the same package:
+>
+> - **TypeScript 6 → 7.** `typescript-eslint@8.66` declares
+>   `typescript: ">=4.8.4 <6.1.0"` and hard-errors on TS 7 ("typescript-eslint does
+>   not support TS 7.0"), taking `eslint-config-next` down with it. Tracked at
+>   [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940);
+>   support is targeted at TS ≥ 7.1. See §9 for what was measured.
+> - **ESLint 9 → 10.** `eslint-config-next@16` bundles a TypeScript parser that
+>   crashes under ESLint 10 (`scopeManager.addGlobals is not a function`).
+>
+> Both unblock when typescript-eslint ships the relevant support; recheck together.
 >
 > One correction to §2.4: only the **article** route needed `fallback: 'blocking'`.
 > The category route enumerates all five categories at build time and returns
@@ -299,3 +309,45 @@ Two open questions worth resolving before Phase 2, since both suggest something 
 2. **Was an App Router migration intended?** `tailwind.config.js` globs `./app/**`, and the codebase
    is entirely Pages Router. If App Router is on the roadmap, it should land before Phase 5 rather
    than after — otherwise the SEO work gets rewritten.
+
+---
+
+## 9. TypeScript 7: measured, then deferred
+
+Added 2026-08-04, after attempting the upgrade.
+
+TypeScript 7.0.2 is a stable release and the codebase is **already compatible** — `tsc --noEmit`
+under 7.0.2 passes with zero errors and no source changes. The blocker is entirely toolchain.
+
+### What was tested
+
+| Step                                                         | Result                                                                              |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `tsc --noEmit` under TS 7.0.2                                | Passes, no source changes                                                           |
+| `next build` under TS 7.0.2                                  | **Fails.** "TypeScript 7.0.2 does not provide the compiler API required by Next.js" |
+| `next build` + `experimental.useTypeScriptCli`               | **Passes.** TS check 2.5s → **468ms**                                               |
+| `eslint .` under TS 7.0.2                                    | **Fails hard.** "typescript-eslint does not support TS 7.0"                         |
+| Side-by-side TS 6 for typescript-eslint via pnpm `overrides` | **Does not work** — see below                                                       |
+
+### Why the side-by-side workaround fails
+
+Microsoft's guidance is to run typescript-eslint against a separate TS 6 install. That cannot be
+expressed as a pnpm `overrides` entry here: `typescript` is a **peer** dependency of
+typescript-eslint, and pnpm resolves peers from the root importer rather than through
+`pkg>dep` overrides. The override is accepted and changes nothing — typescript-eslint still
+resolves the root `typescript@7`.
+
+Making it work would mean installing TS 6 as the root `typescript` and aliasing TS 7 for
+`tsc`/Next, which inverts the setup: the `typecheck` script would then run TS 6 anyway, so the
+upgrade buys nothing.
+
+### Decision
+
+Ship **TypeScript 6.0.3** — stable, fully supported by both Next 16 and typescript-eslint, no
+experimental flags, and the prerequisite for 7. TS 6 is the deprecation-warning release; it
+reports no warnings against this codebase.
+
+Revisit TS 7 when typescript-eslint ships support (targeted at TS ≥ 7.1). At that point the
+upgrade should be close to a one-line version bump plus `experimental.useTypeScriptCli` — or
+nothing at all, if Next has adopted the TS 7 compiler API by then. The measured ~5x faster
+type-check is the payoff.
