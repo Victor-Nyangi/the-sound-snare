@@ -24,7 +24,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const onLoaded = () => setDuration(audio.duration);
+    const onLoaded = () => {
+      if (Number.isFinite(audio.duration)) setDuration(audio.duration);
+    };
     const onTime = () => setCurrentTime(audio.currentTime);
     const onPlay = () => setPlaying(true);
     const onPause = () => setPlaying(false);
@@ -34,7 +36,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
     };
     const onError = () => setFailed(true);
 
+    // Metadata often loads before this effect attaches its listeners, in which
+    // case loadedmetadata has already fired and would never set the duration.
+    onLoaded();
+
     audio.addEventListener("loadedmetadata", onLoaded);
+    audio.addEventListener("durationchange", onLoaded);
     audio.addEventListener("timeupdate", onTime);
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
@@ -43,6 +50,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
 
     return () => {
       audio.removeEventListener("loadedmetadata", onLoaded);
+      audio.removeEventListener("durationchange", onLoaded);
       audio.removeEventListener("timeupdate", onTime);
       audio.removeEventListener("play", onPlay);
       audio.removeEventListener("pause", onPause);
