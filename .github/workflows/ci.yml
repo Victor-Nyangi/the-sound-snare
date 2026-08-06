@@ -1,9 +1,21 @@
+# Lint, typecheck and format checks on every pull request, plus a build that
+# runs only where the Sanity secrets are available.
+#
+# Expects four repository secrets: SANITY_PROJECT_ID, SANITY_DATASET,
+# SANITY_API_VERSION and SANITY_QUOTES_REF. Without them every step still runs
+# except the build, which is skipped rather than failed.
+
 name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
+
+# A newer push to the same branch makes an in-flight run obsolete.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check:
@@ -16,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Takes the pnpm version from the packageManager field in package.json.
       - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v4
@@ -23,6 +36,11 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      # pnpm 11 verifies the lockfile against its supply-chain policies here,
+      # including the 24h minimumReleaseAge quarantine, so a lockfile
+      # regenerated within a day of a dependency publishing fails until it is
+      # re-resolved. pnpm-workspace.yaml approves the native builds that sharp
+      # and unrs-resolver need; without it the install errors on ignored builds.
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm lint
@@ -37,12 +55,3 @@ jobs:
       - name: Build
         if: ${{ env.sanityprojectId != '' }}
         run: pnpm build
-
-# ---------------------------------------------------------------------------
-# To activate: move this file to .github/workflows/ci.yml and commit it.
-# It could not be committed to that path here because the session's GitHub
-# token lacks the `workflow` scope.
-#
-# It also expects four repository secrets: SANITY_PROJECT_ID, SANITY_DATASET,
-# SANITY_API_VERSION and SANITY_QUOTES_REF.
-# ---------------------------------------------------------------------------
