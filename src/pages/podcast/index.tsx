@@ -5,6 +5,8 @@ import MusicBg from "../../../public/images/music.jpg";
 import SpotifyIcon from "../../../public/images/spotify-icon.png";
 import { getPodcasts, getYouTubeChannels } from "../../lib/sanity";
 import SEO from "@/components/SEO";
+import AudioPlayer from "@/components/AudioPlayer";
+import SpotifyEmbed from "@/components/SpotifyEmbed";
 
 export async function getStaticProps() {
   const podcasts = await getPodcasts();
@@ -153,34 +155,27 @@ const PodcastPage = ({ podcasts, youtubeChannels }: PodcastPageProps) => {
                           Listen on Spotify
                         </a>
                         {podcast.episodes && podcast.episodes.length > 0 && (
-                          <ul className="ml-4 mt-2 space-y-1">
+                          <ul className="mt-3 space-y-4 text-left">
                             {podcast.episodes.map(
                               (ep: Episode, idx: number) => (
                                 <li key={idx}>
-                                  <span className="font-medium">
-                                    {ep.title}
-                                  </span>
-                                  : {ep.description}{" "}
-                                  {ep.spotifyUrl && (
-                                    <a
-                                      href={ep.spotifyUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-green-600 hover:underline ml-1"
-                                    >
-                                      Spotify
-                                    </a>
+                                  <div className="font-medium">{ep.title}</div>
+                                  {ep.description && (
+                                    <p className="mb-2 text-sm text-gray-700">
+                                      {ep.description}
+                                    </p>
                                   )}
-                                  {ep.audioUrl && (
-                                    <a
-                                      href={ep.audioUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-gray-600 hover:underline ml-1"
-                                    >
-                                      Audio
-                                    </a>
-                                  )}
+                                  {ep.audioUrl ? (
+                                    <AudioPlayer
+                                      src={ep.audioUrl}
+                                      title={ep.title}
+                                    />
+                                  ) : ep.spotifyUrl ? (
+                                    <SpotifyEmbed
+                                      url={ep.spotifyUrl}
+                                      title={ep.title}
+                                    />
+                                  ) : null}
                                 </li>
                               )
                             )}
