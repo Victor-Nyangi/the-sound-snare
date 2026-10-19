@@ -12,41 +12,41 @@
 
 ## TL;DR
 
-A Sanity-backed Next.js blog/podcast site. Over five merged PRs it went from *no CI, four live
-bugs, 1238 packages* to *green CI, bugs fixed, dependencies current, in-page podcast playback*.
+A Sanity-backed Next.js blog/podcast site. Over five merged PRs it went from _no CI, four live
+bugs, 1238 packages_ to _green CI, bugs fixed, dependencies current, in-page podcast playback_.
 
 **Four things are open. Three of them need a human, not an agent** — two are credentials/permissions
 only the repo owner holds, one is a stale PR awaiting a go/no-go. Nothing is blocked on engineering
 capacity.
 
 The single most consequential open item is **repo secrets**: without them CI skips the build step,
-so the pipeline currently verifies lint/typecheck/format but *never that the app compiles*.
+so the pipeline currently verifies lint/typecheck/format but _never that the app compiles_.
 
 ---
 
 ## Current state
 
-| | |
-|---|---|
-| `main` | `5cc4021`, clean, in sync with origin |
-| CI | ✅ green — `.github/workflows/ci.yml`, job `check`, ~43s |
-| CI coverage | ⚠️ partial — build step **skipped**, see Open Item A |
-| Branch protection | ❌ none — `main` accepts direct pushes |
-| Open PRs | 1 (#3, stale 23 days) |
-| Tests | none — no test suite exists, by prior decision |
+|                   |                                                          |
+| ----------------- | -------------------------------------------------------- |
+| `main`            | `5cc4021`, clean, in sync with origin                    |
+| CI                | ✅ green — `.github/workflows/ci.yml`, job `check`, ~43s |
+| CI coverage       | ⚠️ partial — build step **skipped**, see Open Item A     |
+| Branch protection | ❌ none — `main` accepts direct pushes                   |
+| Open PRs          | 1 (#3, stale 23 days)                                    |
+| Tests             | none — no test suite exists, by prior decision           |
 
 ---
 
 ## What shipped
 
-| PR | Outcome |
-|---|---|
-| #1 | Project assessment; 4 user-visible bugs fixed; dead code removed (~⅓ of `src/`); `next-sanity` → `@sanity/client` (1238 → ~250 packages); SEO metadata |
-| #2 | Unblocked a fully broken dev server after a pnpm 11 adoption |
-| #4 | Podcast episodes play **in page** instead of linking out — Spotify iFrame embeds + a custom `<audio>` player |
-| #5 | Fixed a player bug that every static check had passed |
-| #6 | CI activated |
-| #7 | CI actions moved off the deprecated Node 20 runtime |
+| PR  | Outcome                                                                                                                                                |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| #1  | Project assessment; 4 user-visible bugs fixed; dead code removed (~⅓ of `src/`); `next-sanity` → `@sanity/client` (1238 → ~250 packages); SEO metadata |
+| #2  | Unblocked a fully broken dev server after a pnpm 11 adoption                                                                                           |
+| #4  | Podcast episodes play **in page** instead of linking out — Spotify iFrame embeds + a custom `<audio>` player                                           |
+| #5  | Fixed a player bug that every static check had passed                                                                                                  |
+| #6  | CI activated                                                                                                                                           |
+| #7  | CI actions moved off the deprecated Node 20 runtime                                                                                                    |
 
 ---
 
@@ -75,7 +75,7 @@ require `check`, `strict: true` (branch must be current), no required reviews (s
 approve their own PRs), `enforce_admins: false` (deliberate escape hatch — a GitHub Actions outage
 during this work already made the case for one).
 
-**Sequencing note:** do this *after* A. You want `check` proven green *with* the build step live
+**Sequencing note:** do this _after_ A. You want `check` proven green _with_ the build step live
 before it becomes a merge gate.
 
 **Who can do it:** repo owner. An agent attempt was blocked by a permission classifier — that's a
@@ -112,7 +112,7 @@ Two discrepancies found while mapping secret names:
   its own file.
 - `.env.local` defines **`prodUrl`**, but no code reads that name — `SEO.tsx` and `sitemap.xml.ts`
   read `NEXT_PUBLIC_SITE_URL`. Both fall back to a hardcoded URL, so canonical and Open Graph tags
-  are correct *by luck rather than by config*. Renaming the variable makes it real.
+  are correct _by luck rather than by config_. Renaming the variable makes it real.
 
 Neither breaks anything today. Both are minutes of work.
 
@@ -123,7 +123,7 @@ Neither breaks anything today. Both are minutes of work.
 **The podcast page curates other people's shows.** The owner wanted Spotify-style in-page
 play/pause but rejected self-hosting audio on cloud storage cost. That makes the **Spotify iFrame
 Embed API the primary playback path** — no API key, no OAuth, no quota, and the only Spotify surface
-that plays full episodes without requiring *every listener* to hold Premium.
+that plays full episodes without requiring _every listener_ to hold Premium.
 
 **A custom `<audio>` player also exists, but no content currently exercises it.** As of 2026-08-06
 the only podcast in Sanity is third-party ("Huberman Lab") with `audioUrl: null`. Anyone testing the
@@ -157,7 +157,7 @@ commands work from anywhere if you pass `--repo Victor-Nyangi/the-sound-snare`; 
 them from inside the project root.
 
 - **`ASSESSMENT.md`** (301 lines) — the original audit: dependency table, per-bug analysis, phased
-  remediation plan. Its status banner is current and records what was *not* done. §9 covers the
+  remediation plan. Its status banner is current and records what was _not_ done. §9 covers the
   TypeScript 6/7 measurements.
 - **PR bodies** — each merged PR documents its own reasoning and verification. PR #3's body is the
   authoritative record on the TypeScript 7 blocker.
