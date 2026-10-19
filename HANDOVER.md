@@ -99,6 +99,8 @@ not happened.
 **Decision needed:** run a local `pnpm build`, then merge — or close it as stale and redo later.
 Note it grows riskier to merge the longer it sits behind `main`.
 
+> **2026-10-19 — done.** TypeScript 6.0.3 is on `main` (`55775c6`, "chore(deps): upgrade TypeScript 5.9 -> 6.0.3"; PR #3 shows merged) with CI green on that commit; this item is closed.
+
 ---
 
 ### D. Environment-config hygiene — small, low risk
